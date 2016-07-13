@@ -31,11 +31,6 @@ void ResetBit(int &dna, int idx)
 }
 
 
-
-
-
-
-
 namespace SIMPLE_GA {
 
 	class InsectChromosome1
@@ -44,66 +39,60 @@ namespace SIMPLE_GA {
 
 		int dna = 0;
 
-		float fitness = 0.0f;
+		float fitness	= 0.0f;
 
-		int target = 0;
-		int numTraits = 8;
-		int numGenes = 25;
+		int target		= 0;
+		int numTraits	= 8;
+		int numGenes	= 25;
 
-		int ANTENNAE_MASK = 0;
-		int HEAD_MASK = 0;
-		int WINGS_MASK = 0;
-		int BODY_MASK = 0;
-		int FEET_MASK = 0;
+		int ANTENNAE_MASK	= 0;
+		int HEAD_MASK		= 0;
+		int WINGS_MASK		= 0;
+		int BODY_MASK		= 0;
+		int FEET_MASK		= 0;
 		int BODY_COLOR_MASK = 0;
-		int SIZE_MASK = 0;
+		int SIZE_MASK		= 0;
 		int HEAD_COLOR_MASK = 0;
 
-		int antennae_start = 0;
-		int head_start = 4;
-		int wing_start = 6;
-		int body_start = 10;
-		int feet_start = 16;
-		int body_color_start = 17;
-		int size_start = 20;
-		int head_color_start = 22;
-		int head_color_end = 25;
+		int antennae_start		= 0;
+		int head_start			= 4;
+		int wing_start			= 6;
+		int body_start			= 10;
+		int feet_start			= 16;
+		int body_color_start	= 17;
+		int size_start			= 20;
+		int head_color_start	= 22;
+		int head_color_end		= 25;
 
 		InsectChromosome1()
 		{
-			for (int i = antennae_start; i < head_start; i++) SetBit(ANTENNAE_MASK, i);
-			for (int i = head_start; i < wing_start; i++) SetBit(HEAD_MASK, i);
-			for (int i = wing_start; i < body_start; i++) SetBit(WINGS_MASK, i);
-			for (int i = body_start; i < feet_start; i++) SetBit(BODY_MASK, i);
-			for (int i = feet_start; i < body_color_start; i++) SetBit(FEET_MASK, i);
-			for (int i = body_color_start; i < size_start; i++) SetBit(BODY_COLOR_MASK, i);
-			for (int i = size_start; i < head_color_start; i++) SetBit(SIZE_MASK, i);
+			// compute the masks
+			for (int i = antennae_start; i < head_start; i++)		SetBit(ANTENNAE_MASK, i);
+			for (int i = head_start; i < wing_start; i++)			SetBit(HEAD_MASK, i);
+			for (int i = wing_start; i < body_start; i++)			SetBit(WINGS_MASK, i);
+			for (int i = body_start; i < feet_start; i++)			SetBit(BODY_MASK, i);
+			for (int i = feet_start; i < body_color_start; i++)		SetBit(FEET_MASK, i);
+			for (int i = body_color_start; i < size_start; i++)		SetBit(BODY_COLOR_MASK, i);
+			for (int i = size_start; i < head_color_start; i++)		SetBit(SIZE_MASK, i);
 			for (int i = head_color_start; i < head_color_end; i++) SetBit(HEAD_COLOR_MASK, i);
 		}
 
 		void SetAntennae(int choice)
 		{
 			dna |= (ANTENNAE_MASK & (choice));
-
 		}
-
 		void SetHead(int choice)
 		{
 			dna |= (HEAD_MASK & (choice << head_start));
-
 		}
-
 		void SetWing(int choice)
 		{
 			dna |= (WINGS_MASK & (choice << wing_start));
-
 		}
-
 		void SetBody(int choice)
 		{
 			dna |= (BODY_MASK & (choice << body_start));
 		}
-
 		void SetFeet(int choice)
 		{
 			dna |= (FEET_MASK & (choice << feet_start));
@@ -120,32 +109,22 @@ namespace SIMPLE_GA {
 		{
 			dna |= (HEAD_COLOR_MASK & (choice << head_color_start));
 		}
-
-
-
 		int GetAntennae()
 		{
 			return dna & (ANTENNAE_MASK);
-
 		}
-
 		int GetHead()
 		{
 			return ((dna & HEAD_MASK) >> head_start);
-
 		}
-
 		int GetWing()
 		{
 			return ((dna & WINGS_MASK) >> wing_start);
-
 		}
-
 		int GetBody()
 		{
 			return ((dna & BODY_MASK) >> body_start);
 		}
-
 		int GetFeet()
 		{
 			return ((dna & FEET_MASK) >> feet_start);
@@ -295,23 +274,28 @@ namespace SIMPLE_GA {
 	public:
 
 		vector<InsectChromosome1*> population;
-		unsigned int population_size = 200;
 
-		float mutationRate = 0.03;
+		unsigned int population_size	= 200;
+		float mutationRate				= 0.03;
+		float sumFitness				= 0.0f;
+		float best_fitness				= 0.0f;
+		int best_index					= 0;
+		bool match						= false;
+		int target						= 0;
 
-		float sumFitness;
+		InsectChromosome1 temp_mating_insect_storage;
+		
+		std::vector<int> mating_pool;
+		std::vector<int> last_phase_mating_pool;
 
-		float best_fitness = 0.0f;
-		int best_index = 0;
-
-		bool match = false;
-
-		int target = 0;
-
+		std::vector<int> *mating_pool_ptrA = 0;
+		std::vector<int> *mating_pool_ptrB = 0;
 
 		Population()
 		{
 			InsectChromosome1 c1;
+
+			// setup the target insect with predetermined choices
 
 			c1.SetHead(2);
 			c1.SetAntennae(4);
@@ -322,13 +306,14 @@ namespace SIMPLE_GA {
 			c1.SetSize(2);
 			c1.SetHeadColor(1);
 
-			target = c1.dna;
+			target = c1.dna;	
 		}
 
-		Population(int sz)
+		Population(int size)
 		{
-			population_size = sz;
+			population_size = size;
 
+			// setup the target insect with predetermined choices
 			InsectChromosome1 c1;
 
 			c1.SetHead(2);
@@ -359,7 +344,6 @@ namespace SIMPLE_GA {
 			}
 		}
 
-
 		int GetBest()
 		{ 
 			return population[best_index]->dna; 
@@ -368,26 +352,31 @@ namespace SIMPLE_GA {
 		void Initialize()
 		{
 			for (int i = 0; i < population_size; i++) {
+				
 				//Initializing each member of the population
-
 				InsectChromosome1* dna = new InsectChromosome1();
 				
 				dna->SetTarget(target);
 				population.push_back(dna);
+				mating_pool.push_back(dna->dna);
+				last_phase_mating_pool.push_back(dna->dna);
 			}
+
+			mating_pool_ptrA = &mating_pool;
+			mating_pool_ptrB = &last_phase_mating_pool;
 		}
 
-		
+		//
+		// Worst case. this is O(n^2) because we have the inner loop in the second phase
+		//
 		void Update()
 		{
-			// optimization ... to avoid using new and delete to allocate and remove remove memory 
-			// the chromosome's dna is stored in integer form in a list
-			std::vector<int> mating_pool; 
-
 			int best = 0;
 			best_index = 0;
 			best_fitness = 0.0f;
 			sumFitness = 0.0f;
+
+			float sum_last_fitness = sumFitness;
 
 			//evaluate fitness
 			for (int i = 0; i < population.size(); i++) {
@@ -402,8 +391,8 @@ namespace SIMPLE_GA {
 					best_index = i;
 				}
 
-				// for this small example i am using new for memory allocation
-				// but this could easily be done by storing a vector of integers and writing them ...
+				// This should not be here ... if the function is used then the assignment was done
+				// in the initialize function, causing a possible error in the first pass ... it might not matter ...
 				//
 
 				mating_pool.push_back(population[i]->dna);
@@ -414,39 +403,125 @@ namespace SIMPLE_GA {
 			for (int i = 0; i < population.size(); i++) {
 
 
-				if (i == this->best_index) continue;
+				if (i == this->best_index)
+				{
+					
+					continue;
+				}
 
-				int a = this->ChooseParent();
-				int b = this->ChooseParent();
+				int a = this->ChooseParent(-1);
+				int b = this->ChooseParent(a);
 
 				if (a == b) if (a <= population.size() - 2)b = a + 1; else b = 0;
 
-				InsectChromosome1 *partnerA = population[a]; 
-				InsectChromosome1 *partnerB = population[b];
+				int partnerA = mating_pool[a]; 
+				int partnerB = mating_pool[b];
+
+				temp_mating_insect_storage.dna = partnerA;
 
 				//Step 3a: Crossover  (Note some of the other crossover operations have not been implemented)
-				population[i]->dna = partnerA->crossoverSinglePoint(partnerB->dna);
+				population[i]->dna = temp_mating_insect_storage.crossoverSinglePoint(partnerB);
 				
 				//Step 3b: Mutation
 				population[i]->mutate(mutationRate);
+
+				
 			}
 
 			mating_pool.clear();
 		}
 
+
+		//
+		// Worst case. this is O(n^2) because we have the inner loop ChooseParent()
+		// more optimal approach than previous function, although less clearly computing
+		// the GA algorithm
+		//
+		void Update2()
+		{
+			int best = 0;
+			int this_best_index = this->best_index;
+			float this_best_fitness = 0.0f;
+			float sum_last_fitness = 0.0f;
+
+			static bool first_time = true; // code that is only run the first time
+			if (first_time)
+			{
+				first_time = false;
+				for (int i = 0; i < population.size(); i++) {
+
+					population[i]->Fitness();
+
+					sumFitness += population[i]->fitness;
+
+					if (population[i]->fitness > this_best_fitness)
+					{
+						best_fitness = population[i]->fitness;
+						best_index = i;
+					}
+				}
+			}
+
+			int best_value = this->GetBest();
+
+			for (int i = 0; i < population.size(); i++) {
+
+
+				if (i != best_index) // skipping only the best population member
+				{
+					int a = this->ChooseParent(-1);
+					int b = this->ChooseParent(a);
+
+					if (a == b) if (a <= population.size() - 2)b = a + 1; else b = 0;
+
+					int partnerA = (*mating_pool_ptrA) [a];
+					int partnerB = (*mating_pool_ptrA) [b];
+
+					temp_mating_insect_storage.dna = partnerA;
+
+					//Step 3a: Crossover  (Note some of the other crossover operations have not been implemented)
+					population[i]->dna = temp_mating_insect_storage.crossoverSinglePoint(partnerB);
+
+					//Step 3b: Mutation
+					population[i]->mutate(mutationRate);
+				}
+
+
+				population[i]->Fitness();
+
+				sum_last_fitness += population[i]->fitness;
+
+				if (population[i]->fitness > this_best_fitness)
+				{
+					this_best_fitness = population[i]->fitness;
+					this_best_index = i;
+				}
+
+				(*mating_pool_ptrB) [i] = population[i]->dna;
+			}
+
+			best_fitness = this_best_fitness;
+			best_index = this_best_index;
+			sumFitness = sum_last_fitness;
+
+			mating_pool_ptrB = mating_pool_ptrA; // swap pointers
+
+		}
+
 		// 
-		int ChooseParent()
+		int ChooseParent(int parent_to_skip)
 		{
 			int randSelector = (int)RandomFloat(0, sumFitness) * 100;
-
 
 			int memberID = 0;
 			int partialSum = 0;
 
 			for (int i = 0; i < population.size(); i++) {
+				
 				int n = (int)(population[i]->fitness * 100);
 				if (partialSum < randSelector && partialSum + n >= randSelector)
 				{
+					// large chance of best index cloning built into this function
 					return i;
 				}
 				partialSum += n;
@@ -471,6 +546,10 @@ namespace SIMPLE_GA {
 
 using namespace SIMPLE_GA;
 
+//
+//  Object: SimpleExample
+//  abstract base class
+//
 class SimpleExample
 {
 protected:
@@ -494,6 +573,10 @@ public:
 	virtual void mouse(int button, int state, int x, int y){}
 };
 
+//
+//  Object: SimpleExample
+//  Simply runs the code 
+//
 class SimpleGA : public SimpleExample
 {
 public:
@@ -535,7 +618,7 @@ public:
 
 		if (solved == false)
 		{
-			population3.Update();
+			population3.Update2();
 
 			static int generation_count = 0;
 			std::cout << "generation" << generation_count++ << std::endl;//
@@ -547,11 +630,25 @@ public:
 			
 			std::cout << std::endl;
 			
-			//<< population3.GetBest() << std::endl;
-
-
 			if (population3.best_fitness > 0.97f)
+			{
 				solved = true; // print statistics
+				std::cout << "****************************************************" << std::endl;
+				std::cout << std::endl << "Insect Chosen Characteristics" << std::endl;
+				int best = population3.best_index;
+				if (best < population3.population.size())
+				{
+					std::cout << "Antennae Type: " << population3.population[best]->GetAntennae() << std::endl;
+					std::cout << "Head Type: " << population3.population[best]->GetHead() << std::endl;
+					std::cout << "Wing Type: " << population3.population[best]->GetWing() << std::endl;
+					std::cout << "Body Type: " << population3.population[best]->GetBody() << std::endl;
+					std::cout << "Size Type: " << population3.population[best]->GetSize() << std::endl;
+					std::cout << "Body Color: " << population3.population[best]->GetBodyColor() << std::endl;
+					std::cout << "Feet: " << population3.population[best]->GetFeet() << std::endl;
+					std::cout << "Head Color: " << population3.population[best]->GetHeadColor() << std::endl ;
+					std::cout << std::endl << "****************************************************" << std::endl;
+				}
+			}
 		}
 	}
 
