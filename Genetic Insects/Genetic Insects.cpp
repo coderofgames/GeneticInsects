@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
 #include "Utils.h"
 
 using std::vector;
@@ -292,6 +293,8 @@ namespace SIMPLE_GA {
 		std::vector<int> *mating_pool_ptrB = 0;
 		std::vector<int> *temp_mating_pool_ptr = 0;
 
+		std::ofstream myfile;
+
 		Population()
 		{
 			InsectChromosome1 c1;
@@ -307,7 +310,7 @@ namespace SIMPLE_GA {
 			c1.SetSize(2);
 			c1.SetHeadColor(1);
 
-			target = c1.dna;	
+			target = c1.dna;
 		}
 
 		Population(int size)
@@ -343,6 +346,8 @@ namespace SIMPLE_GA {
 					population.clear();
 				
 			}
+
+			myfile.close();
 		}
 
 		int GetBest()
@@ -352,6 +357,7 @@ namespace SIMPLE_GA {
 
 		void Initialize()
 		{
+			myfile.open("example_stats.txt");
 			for (int i = 0; i < population_size; i++) {
 				
 				//Initializing each member of the population
@@ -508,6 +514,16 @@ namespace SIMPLE_GA {
 			temp_mating_pool_ptr = mating_pool_ptrB;
 			mating_pool_ptrB = mating_pool_ptrA; // swap pointers (although it is faster if the lines above and below are commented)
 			mating_pool_ptrA = temp_mating_pool_ptr;
+
+			float mean_fitness = sumFitness / population.size();
+			static int epoch = 0;
+			myfile << "EPOCH: " << epoch <<", MEAN FITNESS: "<< mean_fitness << std::endl;
+			for (int i = 0; i < population.size(); i++)
+			{
+				std::string s = string_dna(population[i]->dna);
+				myfile << s << "," << population[i]->fitness << "," << std:: endl;
+			}
+			epoch++;
 		}
 
 		// 
@@ -550,7 +566,29 @@ namespace SIMPLE_GA {
 
 			population.clear();
 		}
+
+		void print_dna(int g)
+		{
+			for (int i = 0; i < 32; i++)
+			{
+				if (CheckBit(g, i)) std::cout << "1";
+				else std::cout << "0";
+			}
+		}
+
+		std::string string_dna(int g)
+		{
+			std::string ret = "";
+			for (int i = 0; i < 32; i++)
+			{
+				if (CheckBit(g, i)) ret += "1";
+				else ret += "0";
+			}
+			return ret;
+		}
 	};
+
+	
 };
 
 using namespace SIMPLE_GA;
@@ -611,15 +649,6 @@ public:
 	{
 		population3.Initialize();
 	}
-	
-	void print_dna(int g)
-	{
-		for (int i = 0; i < 32; i++)
-		{
-			if (CheckBit(g, i)) std::cout << "1";
-			else std::cout << "0";
-		}
-	}
 
 	void Draw() {}
 
@@ -632,9 +661,9 @@ public:
 			static int generation_count = 0;
 			std::cout << "generation" << generation_count++ << std::endl;//
 			
-			print_dna(population3.GetBest());
+			population3.print_dna(population3.GetBest());
 			std::cout << std::endl;
-			print_dna(population3.target);
+			population3.print_dna(population3.target);
 
 			
 			std::cout << std::endl;
