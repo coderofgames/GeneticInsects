@@ -523,8 +523,15 @@ namespace SIMPLE_GA {
 				int n = (int)(population[i]->fitness * 100);
 				if (partialSum < randSelector && partialSum + n >= randSelector)
 				{
-					// large chance of best index cloning built into this function
-					return i;
+					if (i == parent_to_skip)
+					{
+						if (i + 1 == population.size()) return best_index; // more breeding with population best
+						else return i + 1;
+					}
+					else
+					{
+						return i;
+					}
 				}
 				partialSum += n;
 			}
