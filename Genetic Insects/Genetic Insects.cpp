@@ -398,17 +398,23 @@ namespace SIMPLE_GA {
 					best_index = i;
 				}
 
-				// This should not be here ... if the function is used then the assignment was done
-				// in the initialize function, causing a possible error in the first pass ... it might not matter ...
-				//
 
-				mating_pool.push_back(population[i]->dna);
+				mating_pool[i] = population[i]->dna;
+					//mating_pool.push_back(population[i]->dna);
 			}
 
 			int best_value = this->GetBest();
 
+			float mean_fitness = sumFitness / population.size();
+			static int epoch = 0;
+			myfile << "EPOCH: " << epoch << ", Best: " << best_fitness << ", MEAN FITNESS: " << mean_fitness << std::endl;
+			myfile << "SUM FITNESS: " << sumFitness << ", SUM FITNESS*100: " << sumFitness*100 << std::endl;
+
+
 			for (int i = 0; i < population.size(); i++) {
 
+				//std::string s = string_dna(population[i]->dna);
+				myfile /*<< s << "," */ << population[i]->fitness << ",";// << std::endl;
 
 				if (i == this->best_index)
 				{
@@ -432,99 +438,17 @@ namespace SIMPLE_GA {
 				//Step 3b: Mutation
 				population[i]->mutate(mutationRate);
 
+
+
+
 				
 			}
+			myfile  << std::endl;
 
-			mating_pool.clear();
-		}
-
-
-		//
-		// Worst case. this is O(n^2) because we have the inner loop ChooseParent()
-		// more optimal approach than previous function, although less clearly computing
-		// the GA algorithm
-		//
-		void Update2()
-		{
-			int best = 0;
-			int this_best_index = this->best_index;
-			float this_best_fitness = 0.0f;
-			float sum_last_fitness = 0.0f;
-
-			static bool first_time = true; // code that is only run the first time
-			if (first_time)
-			{
-				first_time = false;
-				for (int i = 0; i < population.size(); i++) {
-
-					population[i]->Fitness();
-
-					sumFitness += population[i]->fitness;
-
-					if (population[i]->fitness > this_best_fitness)
-					{
-						best_fitness = population[i]->fitness;
-						best_index = i;
-					}
-				}
-			}
-
-			int best_value = this->GetBest();
-
-			for (int i = 0; i < population.size(); i++) {
-
-
-				if (i != best_index) // skipping only the best population member
-				{
-					int a = this->ChooseParent(-1);
-					int b = this->ChooseParent(a);
-
-					if (a == b) if (a <= population.size() - 2)b = a + 1; else b = 0;
-
-					int partnerA = (*mating_pool_ptrA) [a];
-					int partnerB = (*mating_pool_ptrA) [b];
-
-					temp_mating_insect_storage.dna = partnerA;
-
-					//Step 3a: Crossover  (Note some of the other crossover operations have not been implemented)
-					population[i]->dna = temp_mating_insect_storage.crossoverSinglePoint(partnerB);
-
-					//Step 3b: Mutation
-					population[i]->mutate(mutationRate);
-				}
-
-
-				population[i]->Fitness();
-
-				sum_last_fitness += population[i]->fitness;
-
-				if (population[i]->fitness > this_best_fitness)
-				{
-					this_best_fitness = population[i]->fitness;
-					this_best_index = i;
-				}
-
-				(*mating_pool_ptrB) [i] = population[i]->dna;
-			}
-
-			best_fitness = this_best_fitness;
-			best_index = this_best_index;
-			sumFitness = sum_last_fitness;
-
-			temp_mating_pool_ptr = mating_pool_ptrB;
-			mating_pool_ptrB = mating_pool_ptrA; // swap pointers (although it is faster if the lines above and below are commented)
-			mating_pool_ptrA = temp_mating_pool_ptr;
-
-			float mean_fitness = sumFitness / population.size();
-			static int epoch = 0;
-			myfile << "EPOCH: " << epoch <<", MEAN FITNESS: "<< mean_fitness << std::endl;
-			for (int i = 0; i < population.size(); i++)
-			{
-				std::string s = string_dna(population[i]->dna);
-				myfile << s << "," << population[i]->fitness << "," << std:: endl;
-			}
 			epoch++;
+			//mating_pool.clear();
 		}
+
 
 		// 
 		int ChooseParent(int parent_to_skip)
@@ -647,6 +571,11 @@ public:
 
 	void Initialize()
 	{
+		// seed random number generator ...
+		int randSelector = (int)RandomFloat(0, 23);
+		 randSelector = (int)RandomFloat(0, 23);
+		 randSelector = (int)RandomFloat(0, 23);
+
 		population3.Initialize();
 	}
 
@@ -656,7 +585,7 @@ public:
 
 		if (solved == false)
 		{
-			population3.Update2();
+			population3.Update();
 
 			static int generation_count = 0;
 			std::cout << "generation" << generation_count++ << std::endl;//
