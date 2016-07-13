@@ -2,6 +2,10 @@
     CONSOLE APPLICATION : Genetic Insects Project Overview
 ========================================================================
 
+Please view the ipython notebook in the Genetic Insects directory. 
+
+<a href="https://github.com/coderofgames/GeneticInsects/blob/master/Genetic%20Insects/Stats_Display.ipynb">Stats_Display.ipynb</a>
+
 Very similar to the Shakespeare monkeys program, this features improvements
 a) the population has a sub-population, named in the code as "mating pool"
 b) the mutation operator mutates 1 bit of the chromosome
