@@ -290,6 +290,7 @@ namespace SIMPLE_GA {
 
 		std::vector<int> *mating_pool_ptrA = 0;
 		std::vector<int> *mating_pool_ptrB = 0;
+		std::vector<int> *temp_mating_pool_ptr = 0;
 
 		Population()
 		{
@@ -504,8 +505,9 @@ namespace SIMPLE_GA {
 			best_index = this_best_index;
 			sumFitness = sum_last_fitness;
 
-			mating_pool_ptrB = mating_pool_ptrA; // swap pointers
-
+			temp_mating_pool_ptr = mating_pool_ptrB;
+			mating_pool_ptrB = mating_pool_ptrA; // swap pointers (although it is faster if the lines above and below are commented)
+			mating_pool_ptrA = temp_mating_pool_ptr;
 		}
 
 		// 
