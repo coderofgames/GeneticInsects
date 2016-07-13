@@ -357,7 +357,8 @@ namespace SIMPLE_GA {
 
 		void Initialize()
 		{
-			myfile.open("example_stats.txt");
+			myfile.open("example_stats6.csv");
+
 			for (int i = 0; i < population_size; i++) {
 				
 				//Initializing each member of the population
@@ -367,7 +368,10 @@ namespace SIMPLE_GA {
 				population.push_back(dna);
 				mating_pool.push_back(dna->dna);
 				last_phase_mating_pool.push_back(dna->dna);
+
+				myfile << i << ",";
 			}
+			myfile <<"mean," << std::endl;
 
 			mating_pool_ptrA = &mating_pool;
 			mating_pool_ptrB = &last_phase_mating_pool;
@@ -407,8 +411,8 @@ namespace SIMPLE_GA {
 
 			float mean_fitness = sumFitness / population.size();
 			static int epoch = 0;
-			myfile << "EPOCH: " << epoch << ", Best: " << best_fitness << ", MEAN FITNESS: " << mean_fitness << std::endl;
-			myfile << "SUM FITNESS: " << sumFitness << ", SUM FITNESS*100: " << sumFitness*100 << std::endl;
+			//myfile << "EPOCH " << epoch << ", ";
+		//	myfile << "SUM FITNESS: " << sumFitness << ", SUM FITNESS*100: " << sumFitness*100 << std::endl;
 
 
 			for (int i = 0; i < population.size(); i++) {
@@ -443,7 +447,7 @@ namespace SIMPLE_GA {
 
 				
 			}
-			myfile  << std::endl;
+			myfile <<mean_fitness << "," << std::endl;
 
 			epoch++;
 			//mating_pool.clear();
