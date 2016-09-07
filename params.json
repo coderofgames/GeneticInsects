@@ -1,0 +1,6 @@
+{
+  "name": "Geneticinsects",
+  "tagline": "A game of genetic insects",
+  "body": "========================================================================\r\n Genetic Insects Project Overview\r\n========================================================================\r\n\r\nPlease view the ipython notebook in the Genetic Insects directory. \r\n\r\n<a href=\"https://github.com/coderofgames/GeneticInsects/blob/master/Genetic%20Insects/Stats_Display.ipynb\">Stats_Display.ipynb</a>\r\n\r\nhttps://github.com/coderofgames/GeneticInsects/blob/master/Genetic%20Insects/Stats_Display.ipynb\r\n\r\nStats_Display.ipynb\r\n\r\nVery similar to the Shakespeare monkeys program, this features improvements\r\na) the population has a sub-population, named in the code as \"mating pool\"\r\nb) the mutation operator mutates 1 bit of the chromosome\r\nc) the InsectChromosome is 1 integer in size, however uses bitfield operations to set genes\r\nd) The program will breed an insect survivor based on initial parameters (hard coded atm)\r\n\r\nStill fixing bugs ... ",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
