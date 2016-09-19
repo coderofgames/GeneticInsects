@@ -1,4 +1,4 @@
-// Genetic Insects.cpp : Defines the entry point for the console application.
+// Genetic Insects.cpp : Defines the entry point32_t for the console application.
 //
 
 #include "stdafx.h"
@@ -8,25 +8,26 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include <cstdint>
 #include "Utils.h"
 
 using std::vector;
+using std::int32_t;
 
 
 
 
-
-void SetBit(int &dna, int idx)
+void SetBit(int32_t &dna, int32_t idx)
 {
 	dna |= (1 << idx);
 }
 
-bool CheckBit(int &dna, int idx)
+bool CheckBit(int32_t &dna, int32_t idx)
 {
 	return dna & (1 << idx);
 }
 
-void ResetBit(int &dna, int idx)
+void ResetBit(int32_t &dna, int32_t idx)
 {
 	dna &= ~(1 << idx);
 }
@@ -38,32 +39,32 @@ namespace SIMPLE_GA {
 	{
 	public:
 
-		int dna = 0;
+		int32_t dna = 0;
 
 		float fitness	= 0.0f;
 
-		int target		= 0;
-		int numTraits	= 8;
-		int numGenes	= 25;
+		int32_t target		= 0;
+		int32_t numTraits	= 8;
+		int32_t numGenes	= 25;
 
-		int ANTENNAE_MASK	= 0;
-		int HEAD_MASK		= 0;
-		int WINGS_MASK		= 0;
-		int BODY_MASK		= 0;
-		int FEET_MASK		= 0;
-		int BODY_COLOR_MASK = 0;
-		int SIZE_MASK		= 0;
-		int HEAD_COLOR_MASK = 0;
+		int32_t ANTENNAE_MASK	= 0;
+		int32_t HEAD_MASK		= 0;
+		int32_t WINGS_MASK		= 0;
+		int32_t BODY_MASK		= 0;
+		int32_t FEET_MASK		= 0;
+		int32_t BODY_COLOR_MASK = 0;
+		int32_t SIZE_MASK		= 0;
+		int32_t HEAD_COLOR_MASK = 0;
 
-		int antennae_start		= 0;
-		int head_start			= 4;
-		int wing_start			= 6;
-		int body_start			= 10;
-		int feet_start			= 16;
-		int body_color_start	= 17;
-		int size_start			= 20;
-		int head_color_start	= 22;
-		int head_color_end		= 25;
+		int32_t antennae_start		= 0;
+		int32_t head_start			= 4;
+		int32_t wing_start			= 6;
+		int32_t body_start			= 10;
+		int32_t feet_start			= 16;
+		int32_t body_color_start	= 17;
+		int32_t size_start			= 20;
+		int32_t head_color_start	= 22;
+		int32_t head_color_end		= 25;
 
 		InsectChromosome1()
 		{
@@ -78,67 +79,67 @@ namespace SIMPLE_GA {
 			for (int i = head_color_start; i < head_color_end; i++) SetBit(HEAD_COLOR_MASK, i);
 		}
 
-		void SetAntennae(int choice)
+		void SetAntennae(int32_t choice)
 		{
 			dna |= (ANTENNAE_MASK & (choice));
 		}
-		void SetHead(int choice)
+		void SetHead(int32_t choice)
 		{
 			dna |= (HEAD_MASK & (choice << head_start));
 		}
-		void SetWing(int choice)
+		void SetWing(int32_t choice)
 		{
 			dna |= (WINGS_MASK & (choice << wing_start));
 		}
-		void SetBody(int choice)
+		void SetBody(int32_t choice)
 		{
 			dna |= (BODY_MASK & (choice << body_start));
 		}
-		void SetFeet(int choice)
+		void SetFeet(int32_t choice)
 		{
 			dna |= (FEET_MASK & (choice << feet_start));
 		}
-		void SetBodyColor(int choice)
+		void SetBodyColor(int32_t choice)
 		{
 			dna |= (BODY_COLOR_MASK & (choice << body_color_start));
 		}
-		void SetSize(int choice)
+		void SetSize(int32_t choice)
 		{
 			dna |= (SIZE_MASK & (choice << size_start));
 		}
-		void SetHeadColor(int choice)
+		void SetHeadColor(int32_t choice)
 		{
 			dna |= (HEAD_COLOR_MASK & (choice << head_color_start));
 		}
-		int GetAntennae()
+		int32_t GetAntennae()
 		{
 			return dna & (ANTENNAE_MASK);
 		}
-		int GetHead()
+		int32_t GetHead()
 		{
 			return ((dna & HEAD_MASK) >> head_start);
 		}
-		int GetWing()
+		int32_t GetWing()
 		{
 			return ((dna & WINGS_MASK) >> wing_start);
 		}
-		int GetBody()
+		int32_t GetBody()
 		{
 			return ((dna & BODY_MASK) >> body_start);
 		}
-		int GetFeet()
+		int32_t GetFeet()
 		{
 			return ((dna & FEET_MASK) >> feet_start);
 		}
-		int GetBodyColor()
+		int32_t GetBodyColor()
 		{
 			return ((dna & BODY_COLOR_MASK) >> body_color_start);
 		}
-		int GetSize()
+		int32_t GetSize()
 		{
 			return ((dna & SIZE_MASK) >> size_start);
 		}
-		int GetHeadColor()
+		int32_t GetHeadColor()
 		{
 			return ((dna & HEAD_COLOR_MASK) >> head_color_start);
 		}
@@ -146,7 +147,7 @@ namespace SIMPLE_GA {
 
 
 		void Fitness() {
-			int score = 0;
+			int32_t score = 0;
 			for (int i = 0; i < this->numGenes; i++) {
 				//Is the character correct ?
 				if (CheckBit(dna, i))
@@ -169,7 +170,7 @@ namespace SIMPLE_GA {
 		void mutate(float mutationRate) {
 			
 			if (RandomFloat(0.0, 1.0) < mutationRate) {
-				int gene_to_mutate = RandomInt(0, 25);
+				int32_t gene_to_mutate = RandomInt(0, 25);
 				
 				if (dna & (1 << gene_to_mutate))
 				{
@@ -179,18 +180,18 @@ namespace SIMPLE_GA {
 			}
 		}
 
-		int crossoverSinglePoint(int dnaB)
+		int32_t crossoverSinglePoint32_t(int32_t dnaB)
 		{
-			int cross_point = RandomInt(0, 25);
+			int32_t cross_point32_t = RandomInt(0, 25);
 
-			int output = 0;
+			int32_t output = 0;
 
-			for (int i = 0; i < cross_point; i++)
+			for (int i = 0; i < cross_point32_t; i++)
 			{
 				if (CheckBit( dna, i ))
 					SetBit(output, i);
 			}
-			for (int i = cross_point; i < 32; i++)
+			for (int i = cross_point32_t; i < 32; i++)
 			{
 				if (CheckBit(dnaB, i))
 					SetBit(output, i);
@@ -199,38 +200,38 @@ namespace SIMPLE_GA {
 			return output;
 		}
 
-		int crossoverTwoPoint(int dnaB)
+		int32_t crossoverTwoPoint32_t(int32_t dnaB)
 		{
-			int cross_point_1 = RandomInt(0, 25);
-			int cross_point_2 = 0;
+			int32_t cross_point32_t_1 = RandomInt(0, 25);
+			int32_t cross_point32_t_2 = 0;
 
-			if (cross_point_1 > 12)
+			if (cross_point32_t_1 > 12)
 			{
-				cross_point_2 = RandomInt(0, 12);
+				cross_point32_t_2 = RandomInt(0, 12);
 				// swap them
-				int temp = cross_point_1;
-				cross_point_1 = cross_point_2;
-				cross_point_2 = temp;
+				int32_t temp = cross_point32_t_1;
+				cross_point32_t_1 = cross_point32_t_2;
+				cross_point32_t_2 = temp;
 			}
 			else
 			{
-				cross_point_2 = RandomInt(12, 25);
+				cross_point32_t_2 = RandomInt(12, 25);
 			}
 
-			int output = 0;
+			int32_t output = 0;
 
-			for (int i = 0; i < cross_point_1; i++)
+			for (int i = 0; i < cross_point32_t_1; i++)
 			{
 				if (CheckBit(dna, i))
 					SetBit(output, i);
 			}
 
-			for (int i = cross_point_1; i < cross_point_2; i++)
+			for (int i = cross_point32_t_1; i < cross_point32_t_2; i++)
 			{
 				if (CheckBit(dnaB, i))
 					SetBit(output, i);
 			}
-			for (int i = cross_point_2; i < 32; i++)
+			for (int i = cross_point32_t_2; i < 32; i++)
 			{
 				if (CheckBit(dna, i))
 					SetBit(output, i);
@@ -240,31 +241,31 @@ namespace SIMPLE_GA {
 
 		}
 
-		int uniformCrossover(int dnaB)
+		int32_t uniformCrossover(int32_t dnaB)
 		{
-			int mask = 0;
+			int32_t mask = 0;
 			for (int i = 0; i < 25; i++)
 			{
 				SetBit( mask, RandomInt(0, 2) );
 			}
 
-			int output = 0;
+			int32_t output = 0;
 
 			output = (dna & mask) | (dnaB & ~mask);
 			
 			return output;
 		}
 
-		int heuristicCrossover(int dnaB, float alpha)
+		int32_t heuristicCrossover(int32_t dnaB, float alpha)
 		{
-			int output = 0;
+			int32_t output = 0;
 
-			output = (int) ((float)dna * alpha) + (1 - alpha) * (float)dnaB;
+			output = (int32_t) ((float)dna * alpha) + (1 - alpha) * (float)dnaB;
 
 			return output;
 		}
 
-		void SetTarget(int t){ target = t; }
+		void SetTarget(int32_t t){ target = t; }
 
 	};
 
@@ -276,22 +277,22 @@ namespace SIMPLE_GA {
 
 		vector<InsectChromosome1*> population;
 
-		unsigned int population_size	= 200;
+		uint32_t population_size	= 200;
 		float mutationRate				= 0.03;
 		float sumFitness				= 0.0f;
 		float best_fitness				= 0.0f;
-		int best_index					= 0;
+		int32_t best_index					= 0;
 		bool match						= false;
-		int target						= 0;
+		int32_t target						= 0;
 
 		InsectChromosome1 temp_mating_insect_storage;
 		
-		std::vector<int> mating_pool;
-		std::vector<int> last_phase_mating_pool;
+		std::vector<int32_t> mating_pool;
+		std::vector<int32_t> last_phase_mating_pool;
 
-		std::vector<int> *mating_pool_ptrA = 0;
-		std::vector<int> *mating_pool_ptrB = 0;
-		std::vector<int> *temp_mating_pool_ptr = 0;
+		std::vector<int32_t> *mating_pool_ptrA = 0;
+		std::vector<int32_t> *mating_pool_ptrB = 0;
+		std::vector<int32_t> *temp_mating_pool_ptr = 0;
 
 		std::ofstream myfile;
 
@@ -313,7 +314,7 @@ namespace SIMPLE_GA {
 			target = c1.dna;
 		}
 
-		Population(int size)
+		Population(int32_t size)
 		{
 			population_size = size;
 
@@ -350,7 +351,7 @@ namespace SIMPLE_GA {
 			myfile.close();
 		}
 
-		int GetBest()
+		int32_t GetBest()
 		{ 
 			return population[best_index]->dna; 
 		}
@@ -382,7 +383,7 @@ namespace SIMPLE_GA {
 		//
 		void Update()
 		{
-			int best = 0;
+			int32_t best = 0;
 			best_index = 0;
 			best_fitness = 0.0f;
 			sumFitness = 0.0f;
@@ -407,10 +408,10 @@ namespace SIMPLE_GA {
 					//mating_pool.push_back(population[i]->dna);
 			}
 
-			int best_value = this->GetBest();
+			int32_t best_value = this->GetBest();
 
 			float mean_fitness = sumFitness / population.size();
-			static int epoch = 0;
+			static int32_t epoch = 0;
 			//myfile << "EPOCH " << epoch << ", ";
 		//	myfile << "SUM FITNESS: " << sumFitness << ", SUM FITNESS*100: " << sumFitness*100 << std::endl;
 
@@ -426,18 +427,18 @@ namespace SIMPLE_GA {
 					continue;
 				}
 
-				int a = this->ChooseParent(-1);
-				int b = this->ChooseParent(a);
+				std::int32_t a = this->ChooseParent(-1);
+				std::int32_t b = this->ChooseParent(a);
 
 				if (a == b) if (a <= population.size() - 2)b = a + 1; else b = 0;
 
-				int partnerA = mating_pool[a]; 
-				int partnerB = mating_pool[b];
+				int32_t partnerA = mating_pool[a]; 
+				int32_t partnerB = mating_pool[b];
 
 				temp_mating_insect_storage.dna = partnerA;
 
 				//Step 3a: Crossover  (Note some of the other crossover operations have not been implemented)
-				population[i]->dna = temp_mating_insect_storage.crossoverSinglePoint(partnerB);
+				population[i]->dna = temp_mating_insect_storage.crossoverSinglePoint32_t(partnerB);
 				
 				//Step 3b: Mutation
 				population[i]->mutate(mutationRate);
@@ -455,16 +456,16 @@ namespace SIMPLE_GA {
 
 
 		// 
-		int ChooseParent(int parent_to_skip)
+		int32_t ChooseParent(int32_t parent_to_skip)
 		{
-			int randSelector = (int)RandomFloat(0, sumFitness) * 100;
+			int32_t randSelector = (int32_t)RandomFloat(0, sumFitness) * 100;
 
-			int memberID = 0;
-			int partialSum = 0;
+			int32_t memberID = 0;
+			int32_t partialSum = 0;
 
 			for (int i = 0; i < population.size(); i++) {
 				
-				int n = (int)(population[i]->fitness * 100);
+				int32_t n = (int32_t)(population[i]->fitness * 100);
 				if (partialSum < randSelector && partialSum + n >= randSelector)
 				{
 					if (i == parent_to_skip)
@@ -495,7 +496,7 @@ namespace SIMPLE_GA {
 			population.clear();
 		}
 
-		void print_dna(int g)
+		void print_dna(int32_t g)
 		{
 			for (int i = 0; i < 32; i++)
 			{
@@ -504,7 +505,7 @@ namespace SIMPLE_GA {
 			}
 		}
 
-		std::string string_dna(int g)
+		std::string string_dna(int32_t g)
 		{
 			std::string ret = "";
 			for (int i = 0; i < 32; i++)
@@ -541,11 +542,11 @@ public:
 	virtual void Update(){};
 	virtual void Draw(){};
 	virtual void Delete(){};
-	virtual void keyboard(unsigned char key, int x, int y){};
-	virtual void keyboardup(unsigned char key, int x, int y){};
-	virtual void Special(int key, int x, int y){};
+	virtual void keyboard(unsigned char key, int32_t x, int32_t y){};
+	virtual void keyboardup(unsigned char key, int32_t x, int32_t y){};
+	virtual void Special(int32_t key, int32_t x, int32_t y){};
 
-	virtual void mouse(int button, int state, int x, int y){}
+	virtual void mouse(int32_t button, int32_t state, int32_t x, int32_t y){}
 };
 
 //
@@ -556,7 +557,7 @@ class SimpleGA : public SimpleExample
 {
 public:
 
-	int population_size;
+	int32_t population_size;
 
 
 	float mutationRate = 0.01;
@@ -568,7 +569,7 @@ public:
 
 
 
-	void SetPopulationSize(int n)
+	void SetPopulationSize(int32_t n)
 	{ 
 		this->population_size = n; 
 	}
@@ -576,9 +577,9 @@ public:
 	void Initialize()
 	{
 		// seed random number generator ...
-		int randSelector = (int)RandomFloat(0, 23);
-		 randSelector = (int)RandomFloat(0, 23);
-		 randSelector = (int)RandomFloat(0, 23);
+		int32_t randSelector = (int32_t)RandomFloat(0, 23);
+		 randSelector = (int32_t)RandomFloat(0, 23);
+		 randSelector = (int32_t)RandomFloat(0, 23);
 
 		population3.Initialize();
 	}
@@ -591,7 +592,7 @@ public:
 		{
 			population3.Update();
 
-			static int generation_count = 0;
+			static int32_t generation_count = 0;
 			std::cout << "generation" << generation_count++ << std::endl;//
 			
 			population3.print_dna(population3.GetBest());
@@ -603,10 +604,10 @@ public:
 			
 			if (population3.best_fitness > 0.97f)
 			{
-				solved = true; // print statistics
+				solved = true; // print32_t statistics
 				std::cout << "****************************************************" << std::endl;
 				std::cout << std::endl << "Insect Chosen Characteristics" << std::endl;
-				int best = population3.best_index;
+				int32_t best = population3.best_index;
 				if (best < population3.population.size())
 				{
 					std::cout << "Antennae Type: " << population3.population[best]->GetAntennae() << std::endl;
@@ -623,11 +624,11 @@ public:
 		}
 	}
 
-	void keyboard(unsigned char key, int x, int y){}
-	void keyboardup(unsigned char key, int x, int y){}
-	void Special(int key, int x, int y){};
+	void keyboard(unsigned char key, int32_t x, int32_t y){}
+	void keyboardup(unsigned char key, int32_t x, int32_t y){}
+	void Special(int32_t key, int32_t x, int32_t y){};
 
-	void mouse(int button, int state, int x, int y){}
+	void mouse(int32_t button, int32_t state, int32_t x, int32_t y){}
 
 	void Delete(){
 		
@@ -654,7 +655,7 @@ HCOLOR_MASK	  11111111111111111111111000111111
 
 
 
-int _tmain(int argc, _TCHAR* argv[])
+int32_t _tmain(int32_t argc, _TCHAR* argv[])
 {
 
 
