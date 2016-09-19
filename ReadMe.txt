@@ -2,9 +2,10 @@
     CONSOLE APPLICATION : Genetic Insects Project Overview
 ========================================================================
 
-Please view the ipython notebook in the Genetic Insects directory. 
+ This code is based on the example in chapter 1 of 
+"Genetic Algorithms", K.F.Man, K.S. Tang and S.Kwong
 
-<a href="https://github.com/coderofgames/GeneticInsects/blob/master/Genetic%20Insects/Stats_Display.ipynb">Stats_Display.ipynb</a>
+Please view the ipython notebook in the Genetic Insects directory.
 
 https://github.com/coderofgames/GeneticInsects/blob/master/Genetic%20Insects/Stats_Display.ipynb
 
